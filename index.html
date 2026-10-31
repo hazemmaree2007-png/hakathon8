@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GovAI Enterprise - Manar Al Iman Private School</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f1f5f9;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0) 100%);
+            border-right: 4px solid #3b82f6;
+            color: #60a5fa;
+        }
+        html[dir="ltr"] .nav-link.active {
+            border-right: none;
+            border-left: 4px solid #3b82f6;
+            background: linear-gradient(270deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0) 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-72 glass-panel border-r border-slate-800 flex flex-col justify-between z-20 shrink-0">
+        <div>
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-slate-800/80 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 flex items-center justify-center font-black text-2xl shadow-lg shadow-blue-500/20 text-white">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg tracking-wide text-white leading-tight">GovAI <span class="text-blue-500 font-bold text-xs uppercase block">Enterprise</span></h1>
+                    <p class="text-[11px] text-slate-400 font-medium" id="sidebar-school">مدرسة منار الإيمان الخاصة</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="mt-6 px-3 space-y-1">
+                <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-link active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                    <span id="txt-nav-dash">لوحة التحليلات القيادية</span>
+                </button>
+                <button onclick="navigateTo('governance')" id="nav-governance" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-sliders w-5 text-center"></i>
+                    <span id="txt-nav-gov">حوكمة واختبار النماذج</span>
+                </button>
+                <button onclick="navigateTo('assistant')" id="nav-assistant" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-robot w-5 text-center"></i>
+                    <span id="txt-nav-ast">المساعد المعرفي (RAG)</span>
+                </button>
+                <button onclick="navigateTo('policies')" id="nav-policies" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-book-bookmark w-5 text-center"></i>
+                    <span id="txt-nav-pol">مكتبة السياسات الحكومية</span>
+                </button>
+                <button onclick="navigateTo('sandbox')" id="nav-sandbox" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-flask w-5 text-center"></i>
+                    <span id="txt-nav-snd">مختبر المحاكاة (Sandbox)</span>
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-4 border-t border-slate-800/80 bg-slate-900/40">
+            <div class="glass-panel p-3 rounded-xl text-xs space-y-1 border-blue-500/20">
+                <div class="flex items-center gap-2 text-blue-400 font-bold">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span id="txt-hackathon-title">هاكاثون الإمارات 2026</span>
+                </div>
+                <p class="text-slate-400 text-[11px]" id="txt-hackathon-sub">مسار الجيل الناشئ (NextGen) - الشارقة</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+
+        <!-- Top Header Navigation -->
+        <header class="h-20 glass-panel border-b border-slate-800 px-8 flex items-center justify-between z-10 shrink-0">
+            <div>
+                <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-blue-500"></i>
+                    <span id="header-main-title">لوحة التحليلات القيادية والحوكمة</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5" id="page-subtitle">المتابعة الفورية لمؤشرات خفض الوقت وامتثال الذكاء الاصطناعي</p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span id="txt-sys-active">النظام متصل: أمان 100%</span>
+                </div>
+
+                <button onclick="toggleLanguage()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl border border-slate-700 text-xs font-bold transition-all shadow-md">
+                    <i class="fa-solid fa-globe text-blue-400"></i>
+                    <span id="lang-btn-text">English</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- View Sections Area -->
+        <main class="flex-1 overflow-y-auto p-8 space-y-8 bg-slate-950/50">
+
+            <!-- PAGE 1: DASHBOARD VIEW -->
+            <section id="view-dashboard" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-blue-500 relative overflow-hidden">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" id="kpi-1-title">تقليل وقت التقييم</p>
+                        <h3 class="text-3xl font-black text-white mt-2">80% <span class="text-emerald-400 text-sm font-bold"><i class="fa-solid fa-arrow-down"></i> -4.2h</span></h3>
+                        <p class="text-xs text-slate-400 mt-2" id="kpi-1-desc">مقارنة بالطرق التقليدية يدويًا</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-emerald-500 relative overflow-hidden">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" id="kpi-2-title">نسبة الامتثال للسياسات</p>
+                        <h3 class="text-3xl font-black text-white mt-2">100% <span class="text-emerald-400 text-sm font-bold"><i class="fa-solid fa-circle-check"></i> مكتمل</span></h3>
+                        <p class="text-xs text-slate-400 mt-2" id="kpi-2-desc">استراتيجية الإمارات للذكاء الاصطناعي 2031</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-purple-500 relative overflow-hidden">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" id="kpi-3-title">النماذج المسجلة</p>
+                        <h3 class="text-3xl font-black text-white mt-2">18 <span class="text-blue-400 text-sm font-bold">+3</span></h3>
+                        <p class="text-xs text-slate-400 mt-2" id="kpi-3-desc">سجلات اعتماد فورية وموثقة</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-amber-500 relative overflow-hidden">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" id="kpi-4-title">مستوى خرق البيانات</p>
+                        <h3 class="text-3xl font-black text-emerald-400 mt-2">0%</h3>
+                        <p class="text-xs text-slate-400 mt-2" id="kpi-4-desc">تشفير كامل AES-256 محليًا</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-base text-white" id="chart1-title">تحليل تسريع زمن معالجة واسترجاع المعلومات (ساعات)</h3>
+                            <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-semibold" id="txt-tag-realtime">تحديث مباشر</span>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="timeSavedChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h3 class="font-bold text-base text-white mb-4" id="chart2-title">توزيع الامتثال حسب معايير الحوكمة</h3>
+                        <div class="h-64 flex items-center justify-center">
+                            <canvas id="complianceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 2: GOVERNANCE & EVALUATION -->
+            <section id="view-governance" class="hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-white" id="gov-table-title">سجل النماذج المفحوصة وأطر الحوكمة</h3>
+                            <p class="text-xs text-slate-400" id="gov-table-sub">فحص تلقائي شامل وفق سجلات معايير قياس الأداء والأمن والملاءمة</p>
+                        </div>
+                        <button onclick="triggerAutoAudit()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-blue-600/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span id="btn-run-audit">إجراء تدقيق حوكمة شامل</span>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right border-collapse">
+                            <thead>
+                                <tr class="text-slate-400 text-xs uppercase border-b border-slate-800 bg-slate-900/40">
+                                    <th class="p-4" id="th-mod">النموذج ومزوده</th>
+                                    <th class="p-4" id="th-use">حالة الاستخدام الحكومية</th>
+                                    <th class="p-4" id="th-acc">دقة الإجابات</th>
+                                    <th class="p-4" id="th-lat">زمن الاستجابة</th>
+                                    <th class="p-4" id="th-sec">التشفير والخصوصية</th>
+                                    <th class="p-4" id="th-sta">حالة الاعتماد</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60 text-sm">
+                                <tr class="hover:bg-slate-800/30 transition-all">
+                                    <td class="p-4">
+                                        <p class="font-bold text-white">Gov-LLM Engine v4</p>
+                                        <p class="text-[11px] text-slate-400">سجل معتمد - UAE Cloud</p>
+                                    </td>
+                                    <td class="p-4 text-slate-300" id="td-use1">استرجاع اللوائح والسياسات</td>
+                                    <td class="p-4"><span class="text-emerald-400 font-bold">99.2%</span></td>
+                                    <td class="p-4 text-slate-300">110ms</td>
+                                    <td class="p-4"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-md text-xs font-bold">AES-256</span></td>
+                                    <td class="p-4"><span id="stat-match-1" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-bold">مطابق 100%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 3: AI KNOWLEDGE ASSISTANT (RAG) -->
+            <section id="view-assistant" class="hidden space-y-4">
+                <div class="glass-panel p-6 rounded-2xl flex flex-col h-[650px]">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">
+                                <i class="fa-solid fa-robot text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-base" id="ast-box-title">المساعد المعرفي الحكومي الذكي (RAG Copilot)</h3>
+                                <p class="text-xs text-slate-400" id="ast-box-sub">إجابات موثوقة ومستندة فورًا إلى القرارات واللوائح الرسمية فقط</p>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-full font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span id="ast-status-tag">RAG Search Active</span>
+                        </span>
+                    </div>
+
+                    <div id="chat-messages" class="flex-1 overflow-y-auto my-4 space-y-4 pr-2">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+                            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl rounded-tr-none max-w-2xl text-sm leading-relaxed text-slate-200" id="ast-welcome-txt">
+                                مرحباً بك. أنا المساعد المعرفي المطور لدعم موظفي والجهات الحكومية. أستطيع الإجابة بدقة عن السياسات واللوائح واستراتيجيات الذكاء الاصطناعي مع توثيق المصادر والصفحات فوراً.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-800 flex gap-3">
+                        <input type="text" id="chat-input" placeholder="اسأل عن سياسة، لائحة، أو آلية حوكمة حكومية..." class="flex-1 bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+                        <button onclick="handleSend()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-blue-600/30">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span id="btn-chat-send">إرسال</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 4: POLICY LIBRARY -->
+            <section id="view-policies" class="hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl space-y-4">
+                    <h3 class="text-lg font-bold text-white" id="pol-sec-title">مكتبة السياسات المعتمدة وأطر الحوكمة</h3>
+                    <p class="text-xs text-slate-400" id="pol-sec-sub">المستندات التي يتم بناء البحث الدلالي (RAG) عليها مباشرة لضمان عدم الهلوسة</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+                            <span class="text-xs text-blue-400 font-bold" id="doc-tag-1">وثيقة رسمية</span>
+                            <h4 class="font-bold text-white text-sm" id="doc1-title">استراتيجية الإمارات الوطنية للذكاء الاصطناعي 2031</h4>
+                            <p class="text-xs text-slate-400" id="doc1-desc">تحديد المحاور الرئيسية والقطاعات الأولوية لتبني الذكاء الاصطناعي الموثوق.</p>
+                        </div>
+                        <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+                            <span class="text-xs text-emerald-400 font-bold" id="doc-tag-2">إطار حوكمة</span>
+                            <h4 class="font-bold text-white text-sm" id="doc2-title">دليل الحوكمة والأمن السيبراني للنماذج التوليدية</h4>
+                            <p class="text-xs text-slate-400" id="doc2-desc">معايير أمان البيانات وتشفيرها ومنع تسريب المعلومات الحساسة للجهات.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 5: SANDBOX LAB -->
+            <section id="view-sandbox" class="hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-white" id="snd-title">مختبر المحاكاة واختبار الاستجابة (AI Sandbox)</h3>
+                        <p class="text-xs text-slate-400" id="snd-sub">اختبار حرارة النموذج (Temperature) والسرعة ونسبة الأمان قبل الاعتماد</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs text-slate-300 font-bold block mb-2" id="lbl-prompt">نص الاختيار التجريبي (Test Prompt):</label>
+                                <textarea id="sandbox-prompt" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white">قم بتحليل الامتثال الأمني لمعيار التشفير AES-256 بالبيئة الحكومية.</textarea>
+                            </div>
+                            <button onclick="runSandboxTest()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-purple-600/30">
+                                <i class="fa-solid fa-play ml-2"></i> <span id="btn-run-test">تشغيل المحاكاة الفورية</span>
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="snd-output-title">نتيجة المحاكاة والسجلات:</h4>
+                            <div id="sandbox-result" class="text-xs text-slate-300 font-mono leading-relaxed">
+                                <p class="text-slate-500" id="snd-default-res">// انقر على تشغيل المحاكاة لبدء الاختبار...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        let currentLanguage = 'ar';
+        let currentView = 'dashboard';
+
+        const i18n = {
+            ar: {
+                school: "مدرسة منار الإيمان الخاصة",
+                navDash: "لوحة التحليلات القيادية",
+                navGov: "حوكمة واختبار النماذج",
+                navAst: "المساعد المعرفي (RAG)",
+                navPol: "مكتبة السياسات الحكومية",
+                navSnd: "مختبر المحاكاة (Sandbox)",
+                hackTitle: "هاكاثون الإمارات 2026",
+                hackSub: "مسار الجيل الناشئ (NextGen) - الشارقة",
+                sysActive: "النظام متصل: أمان 100%",
+                pageSub: "المتابعة الفورية لمؤشرات خفض الوقت وامتثال الذكاء الاصطناعي",
+                kpi1Title: "تقليل وقت التقييم",
+                kpi1Desc: "مقارنة بالطرق التقليدية يدويًا",
+                kpi2Title: "نسبة الامتثال للسياسات",
+                kpi2Desc: "استراتيجية الإمارات للذكاء الاصطناعي 2031",
+                kpi3Title: "النماذج المسجلة",
+                kpi3Desc: "سجلات اعتماد فورية وموثقة",
+                kpi4Title: "مستوى خرق البيانات",
+                kpi4Desc: "تشفير كامل AES-256 محليًا",
+                chart1Title: "تحليل تسريع زمن معالجة واسترجاع المعلومات (ساعات)",
+                chart2Title: "توزيع الامتثال حسب معايير الحوكمة",
+                tagRealtime: "تحديث مباشر",
+                govTitle: "سجل النماذج المفحوصة وأطر الحوكمة",
+                govSub: "فحص تلقائي شامل وفق سجلات معايير قياس الأداء والأمن والملاءمة",
+                btnAudit: "إجراء تدقيق حوكمة شامل",
+                thMod: "النموذج ومزوده",
+                thUse: "حالة الاستخدام الحكومية",
+                thAcc: "دقة الإجابات",
+                thLat: "زمن الاستجابة",
+                thSec: "التشفير والخصوصية",
+                thSta: "حالة الاعتماد",
+                tdUse1: "استرجاع اللوائح والسياسات",
+                statMatch1: "مطابق 100%",
+                astBoxTitle: "المساعد المعرفي الحكومي الذكي (RAG Copilot)",
+                astBoxSub: "إجابات موثوقة ومستندة فورًا إلى القرارات واللوائح الرسمية فقط",
+                astStatusTag: "RAG Search Active",
+                astWelcome: "مرحباً بك. أنا المساعد المعرفي المطور لدعم موظفي والجهات الحكومية. أستطيع الإجابة بدقة عن السياسات واللوائح واستراتيجيات الذكاء الاصطناعي مع توثيق المصادر والصفحات فوراً.",
+                btnSend: "إرسال",
+                inputPlaceholder: "اسأل عن سياسة، لائحة، أو آلية حوكمة حكومية...",
+                polSecTitle: "مكتبة السياسات المعتمدة وأطر الحوكمة",
+                polSecSub: "المستندات التي يتم بناء البحث الدلالي (RAG) عليها مباشرة لضمان عدم الهلوسة",
+                docTag1: "وثيقة رسمية",
+                doc1Title: "استراتيجية الإمارات الوطنية للذكاء الاصطناعي 2031",
+                doc1Desc: "تحديد المحاور الرئيسية والقطاعات الأولوية لتبني الذكاء الاصطناعي الموثوق.",
+                docTag2: "إطار حوكمة",
+                doc2Title: "دليل الحوكمة والأمن السيبراني للنماذج التوليدية",
+                doc2Desc: "معايير أمان البيانات وتشفيرها ومنع تسريب المعلومات الحساسة للجهات.",
+                sndTitle: "مختبر المحاكاة واختبار الاستجابة (AI Sandbox)",
+                sndSub: "اختبار حرارة النموذج (Temperature) والسرعة ونسبة الأمان قبل الاعتماد",
+                lblPrompt: "نص الاختيار التجريبي (Test Prompt):",
+                btnRunTest: "تشغيل المحاكاة الفورية",
+                sndOutputTitle: "نتيجة المحاكاة والسجلات:",
+                sndDefaultRes: "// انقر على تشغيل المحاكاة لبدء الاختبار..."
+            },
+            en: {
+                school: "Manar Al Iman Private School",
+                navDash: "Executive Analytics Dashboard",
+                navGov: "Governance & Model Testing",
+                navAst: "Knowledge Assistant (RAG)",
+                navPol: "Government Policy Library",
+                navSnd: "Sandbox Simulator",
+                hackTitle: "UAE Hackathon 2026",
+                hackSub: "NextGen Track - Sharjah",
+                sysActive: "System Online: 100% Secure",
+                pageSub: "Real-time monitoring of evaluation time reduction and AI compliance",
+                kpi1Title: "Eval Time Reduction",
+                kpi1Desc: "Compared to manual methods",
+                kpi2Title: "Policy Compliance",
+                kpi2Desc: "UAE AI Strategy 2031 Alignment",
+                kpi3Title: "Registered Models",
+                kpi3Desc: "Instant verified approval registry",
+                kpi4Title: "Data Breach Risk",
+                kpi4Desc: "Local AES-256 Encryption",
+                chart1Title: "Processing Time Acceleration (Hours)",
+                chart2Title: "Compliance Distribution by Pillar",
+                tagRealtime: "Live Updates",
+                govTitle: "Evaluated Models Registry & Frameworks",
+                govSub: "Automated audit against performance, security, and suitability benchmarks",
+                btnAudit: "Run Full Governance Audit",
+                thMod: "Model & Provider",
+                thUse: "Government Use Case",
+                thAcc: "Accuracy Rate",
+                thLat: "Latency",
+                thSec: "Encryption & Privacy",
+                thSta: "Status",
+                tdUse1: "Policy & Regulation Retrieval",
+                statMatch1: "100% Compliant",
+                astBoxTitle: "Gov Knowledge Assistant (RAG Copilot)",
+                astBoxSub: "Verified answers instantly cited from official documents only",
+                astStatusTag: "RAG Search Active",
+                astWelcome: "Welcome. I am the Knowledge Assistant developed to empower government employees. I deliver precise answers on AI policies and regulations with instant source citations.",
+                btnSend: "Send",
+                inputPlaceholder: "Ask about any policy, regulation, or AI governance framework...",
+                polSecTitle: "Approved Policy Library & Governance Frameworks",
+                polSecSub: "Original documents indexed for Semantic Search (RAG) to ensure zero hallucination",
+                docTag1: "Official Document",
+                doc1Title: "UAE National Strategy for Artificial Intelligence 2031",
+                doc1Desc: "Defines core pillars and priority sectors for reliable AI adoption.",
+                docTag2: "Governance Framework",
+                doc2Title: "Generative AI Governance & Cybersecurity Guidelines",
+                doc2Desc: "Data security, encryption, and sensitive information protection standards.",
+                sndTitle: "AI Response Simulator & Testing Sandbox",
+                sndSub: "Test model temperature, response latency, and safety thresholds before deployment",
+                lblPrompt: "Test Prompt Text:",
+                btnRunTest: "Execute Sandbox Simulation",
+                sndOutputTitle: "Simulation Log & Output:",
+                sndDefaultRes: "// Click simulation run to start testing..."
+            }
+        };
+
+        const headersMap = {
+            dashboard: { ar: 'لوحة التحليلات القيادية والحوكمة', en: 'Executive Analytics & Governance' },
+            governance: { ar: 'حوكمة واختبار النماذج', en: 'Governance & Model Testing' },
+            assistant: { ar: 'المساعد المعرفي الذكي (RAG)', en: 'AI Knowledge Assistant (RAG)' },
+            policies: { ar: 'مكتبة السياسات المعتمدة', en: 'Approved Policy Library' },
+            sandbox: { ar: 'مختبر المحاكاة واختبار الاستجابة', en: 'AI Sandbox Simulator' }
+        };
+
+        function navigateTo(viewName) {
+            currentView = viewName;
+            ['dashboard', 'governance', 'assistant', 'policies', 'sandbox'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                document.getElementById(`nav-${v}`).classList.remove('active');
+            });
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            document.getElementById(`nav-${viewName}`).classList.add('active');
+
+            document.getElementById('header-main-title').innerText = headersMap[viewName][currentLanguage];
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+
+            document.getElementById('lang-btn-text').innerText = currentLanguage === 'ar' ? 'English' : 'العربية';
+            document.getElementById('header-main-title').innerText = headersMap[currentView][currentLanguage];
+
+            const t = i18n[currentLanguage];
+            document.getElementById('sidebar-school').innerText = t.school;
+            document.getElementById('txt-nav-dash').innerText = t.navDash;
+            document.getElementById('txt-nav-gov').innerText = t.navGov;
+            document.getElementById('txt-nav-ast').innerText = t.navAst;
+            document.getElementById('txt-nav-pol').innerText = t.navPol;
+            document.getElementById('txt-nav-snd').innerText = t.navSnd;
+            document.getElementById('txt-hackathon-title').innerText = t.hackTitle;
+            document.getElementById('txt-hackathon-sub').innerText = t.hackSub;
+            document.getElementById('txt-sys-active').innerText = t.sysActive;
+            document.getElementById('page-subtitle').innerText = t.pageSub;
+
+            document.getElementById('kpi-1-title').innerText = t.kpi1Title;
+            document.getElementById('kpi-1-desc').innerText = t.kpi1Desc;
+            document.getElementById('kpi-2-title').innerText = t.kpi2Title;
+            document.getElementById('kpi-2-desc').innerText = t.kpi2Desc;
+            document.getElementById('kpi-3-title').innerText = t.kpi3Title;
+            document.getElementById('kpi-3-desc').innerText = t.kpi3Desc;
+            document.getElementById('kpi-4-title').innerText = t.kpi4Title;
+            document.getElementById('kpi-4-desc').innerText = t.kpi4Desc;
+
+            document.getElementById('chart1-title').innerText = t.chart1Title;
+            document.getElementById('chart2-title').innerText = t.chart2Title;
+            document.getElementById('txt-tag-realtime').innerText = t.tagRealtime;
+
+            document.getElementById('gov-table-title').innerText = t.govTitle;
+            document.getElementById('gov-table-sub').innerText = t.govSub;
+            document.getElementById('btn-run-audit').querySelector('span').innerText = t.btnAudit;
+            document.getElementById('th-mod').innerText = t.thMod;
+            document.getElementById('th-use').innerText = t.thUse;
+            document.getElementById('th-acc').innerText = t.thAcc;
+            document.getElementById('th-lat').innerText = t.thLat;
+            document.getElementById('th-sec').innerText = t.thSec;
+            document.getElementById('th-sta').innerText = t.thSta;
+            document.getElementById('td-use1').innerText = t.tdUse1;
+            document.getElementById('stat-match-1').innerText = t.statMatch1;
+
+            document.getElementById('ast-box-title').innerText = t.astBoxTitle;
+            document.getElementById('ast-box-sub').innerText = t.astBoxSub;
+            document.getElementById('ast-status-tag').innerText = t.astStatusTag;
+            document.getElementById('ast-welcome-txt').innerText = t.astWelcome;
+            document.getElementById('chat-input').placeholder = t.inputPlaceholder;
+            document.getElementById('btn-chat-send').querySelector('span').innerText = t.btnSend;
+
+            document.getElementById('pol-sec-title').innerText = t.polSecTitle;
+            document.getElementById('pol-sec-sub').innerText = t.polSecSub;
+            document.getElementById('doc-tag-1').innerText = t.docTag1;
+            document.getElementById('doc1-title').innerText = t.doc1Title;
+            document.getElementById('doc1-desc').innerText = t.doc1Desc;
+            document.getElementById('doc-tag-2').innerText = t.docTag2;
+            document.getElementById('doc2-title').innerText = t.doc2Title;
+            document.getElementById('doc2-desc').innerText = t.doc2Desc;
+
+            document.getElementById('snd-title').innerText = t.sndTitle;
+            document.getElementById('snd-sub').innerText = t.sndSub;
+            document.getElementById('lbl-prompt').innerText = t.lblPrompt;
+            document.getElementById('btn-run-test').querySelector('span').innerText = t.btnRunTest;
+            document.getElementById('snd-output-title').innerText = t.sndOutputTitle;
+            document.getElementById('snd-default-res').innerText = t.sndDefaultRes;
+
+            initCharts();
+        }
+
+        function handleSend() {
+            const input = document.getElementById('chat-input');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const container = document.getElementById('chat-messages');
+            container.innerHTML += `<div class="flex items-start gap-3 justify-end"><div class="bg-blue-600 text-white p-4 rounded-2xl rounded-tl-none max-w-xl text-sm">${query}</div></div>`;
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            setTimeout(() => {
+                const aiResp = currentLanguage === 'ar' 
+                    ? 'بناءً على وثيقة (استراتيجية الإمارات للذكاء الاصطناعي 2031 - الصفحة 18): تم التحقق من الامتثال بنسبة 100% وخفض الوقت بـ 80%.'
+                    : 'Based on (UAE AI Strategy 2031 - Page 18): Compliance is 100% verified with an 80% time reduction.';
+                container.innerHTML += `
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl rounded-tr-none max-w-xl text-sm text-slate-200">
+                            ${aiResp}
+                        </div>
+                    </div>
+                `;
+                container.scrollTop = container.scrollHeight;
+            }, 600);
+        }
+
+        function triggerAutoAudit() {
+            alert(currentLanguage === 'ar' ? "تم تشغيل التدقيق الفوري! النماذج متوافقة 100%." : "Instant audit completed! Models 100% compliant.");
+        }
+
+        function runSandboxTest() {
+            const output = document.getElementById('sandbox-result');
+            const resText = currentLanguage === 'ar'
+                ? `<p class="text-emerald-400 font-bold">> [SUCCESS] تم الاختبار بنجاح!</p><p>> زمن الاستجابة: 114ms | الأمان: 99.8% (AES-256)</p>`
+                : `<p class="text-emerald-400 font-bold">> [SUCCESS] Test completed successfully!</p><p>> Latency: 114ms | Security: 99.8% (AES-256)</p>`;
+            output.innerHTML = resText;
+        }
+
+        let c1, c2;
+        function initCharts() {
+            if (c1) c1.destroy();
+            if (c2) c2.destroy();
+
+            c1 = new Chart(document.getElementById('timeSavedChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['W1', 'W2', 'W3', 'W4'],
+                    datasets: [
+                        { label: currentLanguage === 'ar' ? 'الوقت اليدوي (ساعات)' : 'Manual Time (Hours)', data: [5, 4.8, 5.2, 5], borderColor: '#ef4444' },
+                        { label: currentLanguage === 'ar' ? 'منصة GovAI (ساعات)' : 'GovAI Engine (Hours)', data: [1, 0.9, 0.8, 0.7], borderColor: '#3b82f6', fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+            });
+
+            c2 = new Chart(document.getElementById('complianceChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: currentLanguage === 'ar' ? ['الأمان', 'الدقة', 'الامتثال'] : ['Security', 'Accuracy', 'Compliance'],
+                    datasets: [{ data: [40, 35, 25], backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+            });
+        }
+
+        window.onload = initCharts;
+    </script>
+</body>
+</html>
